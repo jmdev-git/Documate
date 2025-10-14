@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/tooltip";
 import { useParams } from "next/navigation";
 import { Spinner } from "@/components/ui/spinner";
+import remarkGfm from "remark-gfm";
 
 const PromptOverview = () => {
   const { promptId } = useParams();
@@ -98,6 +99,7 @@ const PromptOverview = () => {
             <div className="relative">
               <div className="bg-white rounded-lg p-4 pb-12 dark:bg-gray-200/10 w-full">
                 <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
                   components={{
                     h1: ({ node, ...props }) => (
                       <h1

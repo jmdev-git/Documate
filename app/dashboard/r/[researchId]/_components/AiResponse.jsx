@@ -11,6 +11,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { TextShimmerWave } from "@/components/motion-primitives/text-shimmer-wave";
+import remarkGfm from "remark-gfm";
 
 const AiResponse = ({ response, onGenerate }) => {
   const [generatedText, setGeneratedText] = useState(null);
@@ -89,6 +90,7 @@ const AiResponse = ({ response, onGenerate }) => {
           <div className="relative">
             <div>
               <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
                 components={{
                   h1: ({ node, ...props }) => (
                     <h1
