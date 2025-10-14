@@ -32,7 +32,7 @@ const CreateDocument = () => {
   const steps = [
     {
       step: 1,
-      title: "Stepe",
+      title: "Step",
       description: parameters[0].title,
     },
     {

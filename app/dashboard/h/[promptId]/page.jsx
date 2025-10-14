@@ -73,7 +73,7 @@ const PromptOverview = () => {
         <div className="container">
           <div className="space-y-4">
             <div className="flex justify-end relative">
-              <div className="p-4 pb-12 w-3/4 rounded-lg bg-primary text-white">
+              <div className="p-4 pb-12 md:w-3/4 w-full rounded-lg bg-primary text-white">
                 {history.user_text}
               </div>
               <div className="absolute bottom-2 right-4 flex items-center gap-2">
