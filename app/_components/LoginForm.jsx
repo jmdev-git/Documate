@@ -118,7 +118,7 @@ const LoginForm = () => {
                   <div className="flex gap-1">
                     <img
                       src="/LightModeLogo.png"
-                      className="size-10"
+                      className="md:size-10 w-8 h-10"
                       alt="Image Logo"
                     />
                     <div className="-space-y-1.5">

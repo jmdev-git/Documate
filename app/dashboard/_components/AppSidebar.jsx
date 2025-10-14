@@ -244,7 +244,7 @@ const AppSidebar = ({ expanded, setExpanded, mobileOpen, setMobileOpen }) => {
                           <span
                             className={`transition-opacity duration-200 cursor-pointer  ${
                               expanded
-                                ? "opacity-0 group-hover:opacity-100 hover:scale-110"
+                                ? "md:opacity-0 md:group-hover:opacity-100 hover:scale-110"
                                 : "opacity-100"
                             }`}
                           >
