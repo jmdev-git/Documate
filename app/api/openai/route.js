@@ -19,109 +19,45 @@ export async function POST(req) {
       preference?.[0] || {};
 
     const requireReferences = citation_style && citation_style.trim() !== "";
-
     const isQAInput = /^\s*\d+\./m.test(userInput);
 
-    if (
-      writing_style &&
-      ["analytical", "critical review", "expository"].includes(
-        writing_style.toLowerCase()
-      )
-    ) {
-      if (isQAInput) {
-        prompt = `Write a ${content_type} that answers the following questions:
+    // --- NEW UNIFIED PROMPT GENERATION ---
 
-      ${userInput}
+    const selectedTone = tone || "conversational, approachable, and direct";
+    const selectedStyle = writing_style || "clear and explanatory";
+    const selectedContentType = content_type || "answer";
 
-      Use a ${tone || "academic"} style.  
-      Provide the response strictly in a Q&A format:
-      - Restate each question in **bold** (keep numbering).
-      - Give clear, direct answers under each question.  
-      ${
-        requireReferences
-          ? `- Use proper in-text citations in ${citation_style} style.\n- End with a "References" section with at least 3 credible sources formatted in ${citation_style}.`
-          : ""
-      }
-      Do not add a title, abstract, or introduction — only the Q&A${
-        requireReferences ? " and references" : ""
-      }.`;
-      } else {
-        prompt = `Write a ${content_type} essay about "${userInput}".  
-
-      Use a ${tone || "academic"} style.  
-      - Organize the essay into sections with **bold headings** for each main point.  
-      - Provide a clear, logical flow (introduction, body, conclusion).  
-      ${
-        requireReferences
-          ? `- Use in-text citations in ${citation_style} style.\n- Include a "References" section with at least 3 credible sources formatted in ${citation_style}.`
-          : ""
-      }`;
-      }
-    } else if (
-      writing_style &&
-      [
-        "narrative",
-        "descriptive",
-        "reflective",
-        "comparative",
-        "persuasive",
-      ].includes(writing_style.toLowerCase())
-    ) {
-      if (isQAInput) {
-        prompt = `Answer the following in a natural, human-like way:
-
-      ${userInput}
-
-      Format:
-      - Restate each question in **bold** (keep numbering).  
-      - Give your answer in the first person ("I"), sounding authentic.  
-      ${
-        requireReferences
-          ? `- If you mention sources, cite briefly in ${citation_style} style.\n- At the end, add a "References" section with at least 2 supporting sources.`
-          : ""
-      }
-      Respond only with the questions and answers${
-        requireReferences ? " and references" : ""
-      }.  
-      Tone: ${tone || "authentic, conversational"}.`;
-      } else {
-        prompt = `Write a ${content_type} in a ${writing_style} style on "${userInput}".  
-
-      Deliver it in a ${tone || "natural"} tone, human-like and engaging.  
-      Use **bold subheadings** for clarity.  
-      ${
-        requireReferences
-          ? `If references are used, cite them in ${citation_style} style.\nEnd with at least 2 references.`
-          : ""
-      }`;
-      }
-    } else {
-      if (isQAInput) {
-        prompt = `Write a ${content_type} based on the following questions:
-
-      ${userInput}
-
-      Provide the response in a Q&A format:
-      - Restate each question in **bold** (keep numbering).  
-      - Answer each directly and clearly.  
-      ${
-        requireReferences
-          ? `- Use proper in-text citations in ${citation_style} style.\n- End with a "References" section containing at least 3 credible sources formatted in ${citation_style}.`
-          : ""
-      }
-      Keep it ${tone || "clear and humanized"}.`;
-      } else {
-        prompt = `Write a ${content_type} essay based on: "${userInput}".  
-
-      Keep the delivery ${tone || "clear and human-like"}.  
-      Structure into paragraphs with **bold section headings**.  
-      ${
-        requireReferences
-          ? `Include in-text citations in ${citation_style} style.\nEnd with at least 3 references formatted in ${citation_style}.`
-          : ""
-      }`;
-      }
+    let referenceInstruction = "";
+    if (requireReferences) {
+      referenceInstruction = `
+    - If using external facts, include a brief in-text citation in **${citation_style}** style.
+    - Conclude with a "References" section with at least 3 supporting sources formatted in **${citation_style}**.`;
     }
+
+    // This is the single, strict prompt template that overrides all long-form structure
+    prompt = `
+        You are a human expert designed for extreme efficiency. Your goal is to provide a **single, highly concise, and direct ${selectedContentType}** based on the user's input.
+
+        **STRICT, OVERRIDING MANDATE:**
+        1.  **Be Short:** Minimize word count. Maximize information density.
+        2.  **Be Direct:** Answer the request immediately. **DO NOT** include any introductory sentences, titles, abstracts, introductions, conclusions, or summary paragraphs.
+        3.  **Be Human:** Write in a natural, **${selectedTone}** tone, using a **${selectedStyle}** style. Avoid robotic phrasing or unnecessary academic language.
+
+        **User's Request:**
+        ${
+          isQAInput
+            ? `Answer these numbered questions with short, direct responses:`
+            : `The topic/question is:`
+        }
+        ${userInput}
+
+        ${
+          isQAInput
+            ? `If numbered questions are provided, answer them in a simple Q&A format, restating the question in **bold** followed immediately by the brief answer.`
+            : ""
+        }
+        ${referenceInstruction}
+            `;
 
     const client = new OpenAI({ baseURL: endpoint, apiKey: token });
     const response = await client.chat.completions.create({

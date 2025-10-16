@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/tooltip";
 import { TextShimmerWave } from "@/components/motion-primitives/text-shimmer-wave";
 import remarkGfm from "remark-gfm";
+import Link from "next/link";
 
 const AiResponse = ({ response, onGenerate }) => {
   const [generatedText, setGeneratedText] = useState(null);
@@ -76,13 +77,19 @@ const AiResponse = ({ response, onGenerate }) => {
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
-                  <Button
-                    size={"sm"}
-                    className="cursor-pointer rounded-sm bg-primary text-white md:w-auto w-full"
+                  <Link
+                    href="/dashboard/coming-soon"
+                    className="w-full"
+                    target="_blank"
                   >
-                    <a href="/dashboard/coming-soon"></a>
-                    Proceed to Customize
-                  </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      className="cursor-pointer rounded-sm bg-primary text-white md:w-auto w-full"
+                    >
+                      Proceed to Customize
+                    </Button>
+                  </Link>
                 </div>
               )}
             </div>
