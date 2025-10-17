@@ -45,10 +45,42 @@ export async function GET(req) {
 
     const parameter = await Parameter.find({ user_id: objectUserId });
 
+    const monthlyData = await Parameter.aggregate([
+      { $match: { user_id: objectUserId } },
+      {
+        $group: {
+          _id: { $month: "$createdAt" },
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+
+    const formatted = monthlyData.map((item) => ({
+      month: monthNames[item._id - 1],
+      count: item.count,
+    }));
+
     return NextResponse.json(
       {
         message: "Parameter(s) count fetched successfully.",
         count: parameter.length,
+        formatted,
       },
       { status: 200 }
     );

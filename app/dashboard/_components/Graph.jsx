@@ -2,16 +2,17 @@
 import { useTheme } from "next-themes";
 import React, { useEffect, useState } from "react";
 import {
-  BarChart,
-  Bar,
   XAxis,
   YAxis,
   Tooltip,
   ResponsiveContainer,
   CartesianGrid,
+  Line,
+  LineChart,
+  Legend,
 } from "recharts";
 
-const Graph = ({ parameterCount, historyCount }) => {
+const Graph = ({ parameterMonth = [], historyMonth = [] }) => {
   const { theme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -19,35 +20,48 @@ const Graph = ({ parameterCount, historyCount }) => {
     setMounted(true);
   }, []);
 
-  const data = [
-    { title: "Document Lists", count: 0 },
-    { title: "Created Documents", count: parameterCount || 0 },
-    { title: "Prompt History", count: historyCount || 0 },
+  const allMonths = [
+    ...new Set([
+      ...parameterMonth.map((d) => d.month),
+      ...historyMonth.map((d) => d.month),
+    ]),
   ];
+
+  const data = allMonths.map((month) => {
+    const parameter = parameterMonth.find((d) => d.month === month);
+    const history = historyMonth.find((d) => d.month === month);
+    return {
+      month,
+      createdCount: parameter?.count || 0,
+      historyCount: history?.count || 0,
+    };
+  });
 
   if (!mounted) {
     return null;
   }
 
   return (
-    <div className="p-4 md:flex hidden rounded-lg bg-white border mt-4 dark:bg-black dark:border-gray-200/30">
+    <div className="md:p-4 p-2 flex rounded-lg bg-white border mt-4 dark:bg-black dark:border-gray-200/30">
       <ResponsiveContainer width="100%" height={325}>
-        <BarChart data={data}>
+        <LineChart data={data}>
           <CartesianGrid
             strokeDasharray="4 4"
             stroke={theme === "dark" ? "#545454" : "#dedede"}
           />
           <XAxis
-            dataKey="title"
+            dataKey="month"
             tick={{
               fontSize: 11,
               fill: theme === "dark" ? "#ffffff" : "#525252",
             }}
-            angle={-10}
-            textAnchor="end"
           />
-
-          <YAxis tick={{ fill: theme === "dark" ? "#ffffff" : "#525252" }} />
+          <YAxis
+            tick={{
+              fill: theme === "dark" ? "#ffffff" : "#525252",
+            }}
+            allowDecimals={false}
+          />
           <Tooltip
             contentStyle={{
               backgroundColor: "#ffffff",
@@ -57,19 +71,25 @@ const Graph = ({ parameterCount, historyCount }) => {
               boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
             }}
           />
-          <Bar
-            dataKey="count"
-            radius={[12, 12, 0, 0]}
-            fill="url(#colorBlue)"
-            barSize={400}
+          <Line
+            type="monotone"
+            dataKey="createdCount"
+            name="Created Documents"
+            stroke="#3B82F6"
+            strokeWidth={3}
+            dot={{ r: 5, strokeWidth: 2 }}
+            activeDot={{ r: 7 }}
           />
-          <defs>
-            <linearGradient id="colorBlue" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.9} />
-              <stop offset="95%" stopColor="#60A5FA" stopOpacity={0.7} />
-            </linearGradient>
-          </defs>
-        </BarChart>
+          <Line
+            type="monotone"
+            dataKey="historyCount"
+            name="Prompt History"
+            stroke="#10B981"
+            strokeWidth={3}
+            dot={{ r: 5, strokeWidth: 2 }}
+            activeDot={{ r: 7 }}
+          />
+        </LineChart>
       </ResponsiveContainer>
     </div>
   );

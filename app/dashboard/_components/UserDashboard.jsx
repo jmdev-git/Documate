@@ -8,7 +8,9 @@ import { useSession } from "next-auth/react";
 const Dashboard = () => {
   const session = useSession();
   const [parameterCount, setParameterCount] = useState(0);
+  const [parameterMonth, setParameterMonth] = useState([]);
   const [historyCount, setHistoryCount] = useState(0);
+  const [historyMonth, setHistoryMonth] = useState([]);
 
   useEffect(() => {
     if (session.status !== "authenticated") return;
@@ -22,6 +24,7 @@ const Dashboard = () => {
 
         if (res.ok) {
           setParameterCount(data.count);
+          setParameterMonth(data.formatted);
         }
       } catch (error) {
         console.log(error);
@@ -37,6 +40,7 @@ const Dashboard = () => {
 
         if (res.ok) {
           setHistoryCount(data.count);
+          setHistoryMonth(data.formatted);
         }
       } catch (error) {
         console.log(error);
@@ -84,7 +88,6 @@ const Dashboard = () => {
         {data.map((d, i) => (
           <div
             key={i}
-         
             className={`p-4 shadow-sm ${d.color} rounded-lg flex flex-col gap-4`}
           >
             <div className="relative">
@@ -111,7 +114,12 @@ const Dashboard = () => {
           </div>
         ))}
       </div>
-      <Graph parameterCount={parameterCount} historyCount={historyCount} />
+      <Graph
+        parameterCount={parameterCount}
+        historyCount={historyCount}
+        parameterMonth={parameterMonth}
+        historyMonth={historyMonth}
+      />
     </div>
   );
 };

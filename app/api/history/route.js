@@ -12,10 +12,42 @@ export async function GET(req) {
 
     const promptHistory = await Response.find({ user_id: objectUserId });
 
+    const monthlyData = await Response.aggregate([
+      { $match: { user_id: objectUserId } },
+      {
+        $group: {
+          _id: { $month: "$createdAt" },
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+
+    const formatted = monthlyData.map((item) => ({
+      month: monthNames[item._id - 1],
+      count: item.count,
+    }));
+
     return NextResponse.json(
       {
         message: "Prompt History fetched successfully",
         count: promptHistory.length,
+        formatted,
       },
       { status: 201 }
     );

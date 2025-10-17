@@ -26,10 +26,10 @@ const Header = ({ setMobileOpen }) => {
             <div className="flex items-start gap-0.5">
               <img
                 src="/DarkModeLogo.png"
-                className="md:h-9 md:w-8 w-8 h-10"
+                className="md:h-9 md:w-8 w-7.5 h-9"
                 alt="Image Logo"
               />
-              <div className="md:-space-y-2 -space-y-1.5 md:-mt-0.5 dark:text-white">
+              <div className="md:-space-y-2 -space-y-1.5 -mt-0.5 dark:text-white">
                 <h4 className="md:text-lg text-base">Documate</h4>
                 <p className="text-xs">by JMDev</p>
               </div>
@@ -38,10 +38,10 @@ const Header = ({ setMobileOpen }) => {
             <div className="flex items-start gap-0.5">
               <img
                 src="/LightModeLogo.png"
-                className="md:h-9 md:w-8 w-8 h-10"
+                className="md:h-9 md:w-8 w-7.5 h-9"
                 alt="Image Logo"
               />
-              <div className="md:-space-y-2 -space-y-1.5 md:-mt-0.5 text-primary">
+              <div className="md:-space-y-2 -space-y-1.5 -mt-0.5 text-primary">
                 <h4 className="text-lg">Documate</h4>
                 <p className="text-xs">by JMDev</p>
               </div>
