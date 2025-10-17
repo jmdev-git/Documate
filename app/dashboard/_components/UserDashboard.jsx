@@ -95,9 +95,9 @@ const Dashboard = () => {
                 <h4 className="text-xl font-semibold tracking-tight text-white">
                   {d.title}
                 </h4>
-                <p className="text-white text-sm">{d.description}</p>
+                <p className="text-gray-200 text-sm">{d.description}</p>
               </div>
-              <div className="absolute right-0 top-9 dark:border dark:border-gray-200/20">
+              <div className="absolute right-0 top-9">
                 <span>{d.icon}</span>
               </div>
             </div>

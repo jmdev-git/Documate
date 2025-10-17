@@ -13,10 +13,7 @@ export const metadata = {
   title: "Documate",
   description: "created by John Mark Depaclayon",
   icons: {
-    icon: [
-      { url: "/DarkModeLogo-32x32.png", sizes: "32x32", type: "image/png" },
-      { url: "/DarkModeLogo-192x192.png", sizes: "192x192", type: "image/png" },
-    ],
+    icon: "/DarkModeLogo.png",
   },
 };
 
