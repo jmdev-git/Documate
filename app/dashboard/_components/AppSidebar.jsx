@@ -6,7 +6,6 @@ import {
   EllipsisVerticalIcon,
   LayoutGrid,
   SquarePen,
-  Table2,
   UserSearch,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
