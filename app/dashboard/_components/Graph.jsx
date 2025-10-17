@@ -11,13 +11,7 @@ import {
   CartesianGrid,
 } from "recharts";
 
-const data = [
-  { title: "Document Lists", count: 24 },
-  { title: "Created Documents", count: 12 },
-  { title: "Prompt History", count: 36 },
-];
-
-const Graph = () => {
+const Graph = ({ parameterCount, historyCount }) => {
   const { theme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -25,13 +19,19 @@ const Graph = () => {
     setMounted(true);
   }, []);
 
+  const data = [
+    { title: "Document Lists", count: 0 },
+    { title: "Created Documents", count: parameterCount || 0 },
+    { title: "Prompt History", count: historyCount || 0 },
+  ];
+
   if (!mounted) {
     return null;
   }
 
   return (
     <div className="p-4 md:flex hidden rounded-lg bg-white border mt-4 dark:bg-black dark:border-gray-200/30">
-      <ResponsiveContainer width="100%" height={280}>
+      <ResponsiveContainer width="100%" height={325}>
         <BarChart data={data}>
           <CartesianGrid
             strokeDasharray="4 4"

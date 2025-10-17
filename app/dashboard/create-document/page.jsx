@@ -20,6 +20,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { RainbowButton } from "@/components/ui/rainbow-button";
 import { useSession } from "next-auth/react";
+import { Magnetic } from "@/components/motion-primitives/magnetic";
 
 const CreateDocument = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -157,34 +158,40 @@ const CreateDocument = () => {
               setSelectedValues={setSelectedValues}
             />
             <div className="flex justify-center space-x-4 mt-8">
-              <RainbowButton
-                type="button"
-                variant="outline"
-                onClick={() => setCurrentStep((prev) => prev - 1)}
-                disabled={currentStep === 1}
-              >
-                <ArrowLeft /> Prev step
-              </RainbowButton>
-              <RainbowButton
-                type="button"
-                variant="outline"
-                onClick={() => {
-                  if (!selectedValues[currentStep - 1]) {
-                    toast.warning("Select one to proceed.");
-                    return;
-                  }
+              <Magnetic>
+                <Button
+                    className={"hover:bg-white cursor-pointer"}
+                  type="button"
+                  variant="outline"
+                  onClick={() => setCurrentStep((prev) => prev - 1)}
+                  disabled={currentStep === 1}
+                >
+                  <ArrowLeft /> Previous step
+                </Button>
+              </Magnetic>
+              <Magnetic>
+                <Button
+                  className={"bg-primary text-white cursor-pointer"}
+                  type="button"
+                  variant="primary"
+                  onClick={() => {
+                    if (!selectedValues[currentStep - 1]) {
+                      toast.warning("Select one to proceed.");
+                      return;
+                    }
 
-                  if (currentStep === steps.length) {
-                    handleSubmit();
-                  } else {
-                    handleNextStep();
-                  }
-                }}
-                disabled={currentStep > steps.length}
-              >
-                {currentStep === steps.length ? "Finish" : "Next step"}
-                <ArrowRight />
-              </RainbowButton>
+                    if (currentStep === steps.length) {
+                      handleSubmit();
+                    } else {
+                      handleNextStep();
+                    }
+                  }}
+                  disabled={currentStep > steps.length}
+                >
+                  {currentStep === steps.length ? "Finish" : "Next step"}
+                  <ArrowRight />
+                </Button>
+              </Magnetic>
             </div>
           </div>
         </form>

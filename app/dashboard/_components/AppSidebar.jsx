@@ -1,12 +1,12 @@
 "use client";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
+  ChevronsLeft,
+  ChevronsRight,
   EllipsisVerticalIcon,
   LayoutGrid,
-  Menu,
   SquarePen,
-  StepBack,
-  StepForward,
+  Table2,
   UserSearch,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -154,16 +154,20 @@ const AppSidebar = ({ expanded, setExpanded, mobileOpen, setMobileOpen }) => {
       <nav className="flex flex-col p-4 h-full relative">
         <div
           className={`absolute cursor-pointer md:block hidden transition-transform duration-200 hover:scale-110  ${
-            expanded ? "top-15 -right-2" : "top-16 left-6"
+            expanded ? "top-15 -right-3" : "top-16 left-6"
           }`}
           onClick={() => setExpanded((curr) => !curr)}
         >
-          <div className="p-1.5 dark:bg-black border bg-white text-primary dark:border-gray-200/30 dark:text-white rounded-full shadow-md hover:shadow-lg transition-shadow duration-200">
-            {expanded ? <StepBack size={18} /> : <StepForward size={18} />}
+          <div className="p-1 dark:bg-black border bg-white text-primary dark:border-gray-200/30 dark:text-white rounded-full hover:shadow-lg transition-shadow duration-200">
+            {expanded ? (
+              <ChevronsLeft size={18} />
+            ) : (
+              <ChevronsRight size={20} />
+            )}
           </div>
         </div>
 
-        <ul className={`flex-1 ${expanded ? "mt-12" : "mt-16"}`}>
+        <ul className={`flex-1 ${expanded ? "mt-12" : "mt-14.5"}`}>
           <span
             className={`text-xs text-muted-foreground dark:text-white overflow-hidden transition-all duration-300 
             ${expanded ? "opacity-100" : "opacity-0"}`}

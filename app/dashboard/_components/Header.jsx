@@ -23,25 +23,25 @@ const Header = ({ setMobileOpen }) => {
       <div className="px-4 py-1.5 flex justify-between items-center">
         <div className="text-2xl font-bold text-primary dark:text-white tracking-tight flex items-center gap-1">
           {theme === "dark" ? (
-            <div className="flex items-center gap-1">
+            <div className="flex items-start gap-0.5">
               <img
                 src="/DarkModeLogo.png"
-                className="md:size-10 w-8 h-10"
+                className="md:h-9 md:w-8 w-8 h-10"
                 alt="Image Logo"
               />
-              <div className="-space-y-1.5">
+              <div className="md:-space-y-2 -space-y-1.5 md:-mt-0.5 dark:text-white">
                 <h4 className="md:text-lg text-base">Documate</h4>
                 <p className="text-xs">by JMDev</p>
               </div>
             </div>
           ) : (
-            <div className="flex gap-1">
+            <div className="flex items-start gap-0.5">
               <img
                 src="/LightModeLogo.png"
-                className="md:size-10 w-8 h-10"
+                className="md:h-9 md:w-8 w-8 h-10"
                 alt="Image Logo"
               />
-              <div className="-space-y-1.5">
+              <div className="md:-space-y-2 -space-y-1.5 md:-mt-0.5 text-primary">
                 <h4 className="text-lg">Documate</h4>
                 <p className="text-xs">by JMDev</p>
               </div>
