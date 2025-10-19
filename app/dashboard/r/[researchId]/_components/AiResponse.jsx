@@ -12,11 +12,15 @@ import {
 } from "@/components/ui/tooltip";
 import { TextShimmerWave } from "@/components/motion-primitives/text-shimmer-wave";
 import remarkGfm from "remark-gfm";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 const AiResponse = ({ response, onGenerate }) => {
   const [generatedText, setGeneratedText] = useState(null);
   const [isTypingDone, setIsTypingDone] = useState(false);
+  const router = useRouter();
+  const session = useSession();
+  const email = session?.data?.user.email;
 
   useEffect(() => {
     if (!response) return;
@@ -34,6 +38,28 @@ const AiResponse = ({ response, onGenerate }) => {
 
     return () => clearInterval(interval);
   }, [response]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const res = await fetch("/api/document", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ generatedText, email }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        router.push(`/dashboard/document/${data.document._id}`);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div>
@@ -77,19 +103,14 @@ const AiResponse = ({ response, onGenerate }) => {
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
-                  <Link
-                    href="/dashboard/coming-soon"
-                    className="w-full"
-                    target="_blank"
+                  <Button
+                    type="button"
+                    size="sm"
+                    className="cursor-pointer rounded-sm bg-primary text-white md:w-auto w-full"
+                    onClick={handleSubmit}
                   >
-                    <Button
-                      type="button"
-                      size="sm"
-                      className="cursor-pointer rounded-sm bg-primary text-white md:w-auto w-full"
-                    >
-                      Proceed to Customize
-                    </Button>
-                  </Link>
+                    Proceed to Customize
+                  </Button>
                 </div>
               )}
             </div>

@@ -12,9 +12,6 @@ const dmSans = DM_Sans({
 export const metadata = {
   title: "Documate",
   description: "created by John Mark Depaclayon",
-  icons: {
-    icon: "/DarkModeLogo.png",
-  },
 };
 
 export default function RootLayout({ children }) {
