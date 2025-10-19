@@ -67,7 +67,7 @@ export default function DocumentWebViewer({ content }) {
     <div>
       <Editor
         key={theme}
-        apiKey={process.env.TINYMCE_API_KEY}
+        apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
         init={{
           height: 610,
           resize: false,
@@ -136,7 +136,7 @@ export default function DocumentWebViewer({ content }) {
             respondWith.string(() =>
               Promise.reject("See docs to implement AI Assistant")
             ),
-          uploadcare_public_key: process.env.UPLOADCARE_KEY,
+          uploadcare_public_key: process.env.UPLOADCARE_PUBLIC_KEY,
         }}
         initialValue={initialHTML}
       />
