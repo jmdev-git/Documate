@@ -7,11 +7,19 @@ import React, { useEffect, useState } from "react";
 
 export default function DocumentWebViewer({ content }) {
   const [mounted, setMounted] = useState(false);
+  const [isReady, setIsReady] = useState(false);
   const { theme } = useTheme();
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (content) {
+      const timer = setTimeout(() => setIsReady(true), 500); // wait for editor script
+      return () => clearTimeout(timer);
+    }
+  }, [content]);
 
   const iso = content?.createdAt;
   const date = new Date(iso);
@@ -25,27 +33,36 @@ export default function DocumentWebViewer({ content }) {
   const convertedMarkdown = marked(content?.content || "");
 
   const initialHTML = `
-  <div style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.6; color: #000;">
-    <table style="width: 100%; border: none; border-collapse: collapse; margin-bottom: 10px;">
-      <tr>
-        <td style="text-align: left; border: none; padding: 4px 0;">
-          <strong>Name:</strong> ___________________________
-        </td>
-        <td style="text-align: right; border: none; padding: 4px 0;">
-          <strong>Date:</strong> ${formatted}
-        </td>
-      </tr>
-    </table>
+  <div style="
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #000;
+  ">
+    <div style="
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    ">
+      <p style="margin: 4px 0; flex: 1; min-width: 180px;">
+        <strong>Name:</strong> ___________________________
+      </p>
+      <p style="margin: 4px 0; flex: 1; min-width: 150px; text-align: right;">
+        <strong>Date:</strong> ${formatted}
+      </p>
+    </div>
 
     <p style="margin: 6px 0;">
-      <strong>Year & Program & Block:</strong> _________________________
+      <strong>Year & Program & Block:</strong> ___________________________
     </p>
 
-    <p style="margin: 6px 0 20px 0;">
+    <p style="margin: 6px 0;">
       <strong>Subject & Code:</strong> ___________________________
     </p>
 
-     <p style="margin: 6px 0 20px 0;">
+    <p style="margin: 6px 0 20px 0;">
       <strong>Assignment No.</strong> ___________________________
     </p>
 
@@ -55,21 +72,23 @@ export default function DocumentWebViewer({ content }) {
   </div>
 `;
 
-  if (!mounted || !content) {
+  if (!isReady) {
     return (
-      <div className="flex justify-center items-center h-[600px]">
+      <div className="flex justify-center items-center h-[calc(100vh-45px)]">
         <Spinner className="text-primary size-8" />
       </div>
     );
   }
 
+  if (!mounted) return null;
+
   return (
-    <div>
+    <div className="h-[calc(100vh-45px)]">
       <Editor
         key={theme}
         apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
         init={{
-          height: 610,
+          height: "100%",
           resize: false,
           skin: theme === "dark" ? "oxide-dark" : "oxide",
           content_css: theme === "dark" ? "dark" : "default",
@@ -127,7 +146,16 @@ export default function DocumentWebViewer({ content }) {
             p, h1, h2, h3, h4, h5, h6, td, th, li {
               color: #000000 !important;
             }
-          `,
+            code, pre {
+              background: none !important;
+              color: #000000 !important;
+              border: none !important;
+              padding: 0 !important;
+              box-shadow: none !important;
+            }
+            pre {
+              background-color: transparent !important;
+            }`,
           mergetags_list: [
             { value: "First.Name", title: "First Name" },
             { value: "Email", title: "Email" },

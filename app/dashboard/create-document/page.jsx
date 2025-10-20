@@ -135,7 +135,7 @@ const CreateDocument = () => {
                     <StepperIndicator className="text-black dark:text-white" />
                     <div className="space-y-0.5 px-2">
                       <StepperTitle>{title}</StepperTitle>
-                      <StepperDescription className="max-sm:hidden">
+                      <StepperDescription title={description} className="max-sm:text-xs line-clamp-1">
                         {description}
                       </StepperDescription>
                     </div>

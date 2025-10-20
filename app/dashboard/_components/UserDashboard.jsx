@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Graph from "./Graph";
 import { NumberTicker } from "@/components/ui/number-ticker";
 import { useSession } from "next-auth/react";
+import { Spinner } from "@/components/ui/spinner";
 
 const Dashboard = () => {
   const session = useSession();
@@ -11,6 +12,7 @@ const Dashboard = () => {
   const [parameterMonth, setParameterMonth] = useState([]);
   const [historyCount, setHistoryCount] = useState(0);
   const [historyMonth, setHistoryMonth] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (session.status !== "authenticated") return;
@@ -28,6 +30,8 @@ const Dashboard = () => {
         }
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -44,6 +48,8 @@ const Dashboard = () => {
         }
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -80,6 +86,14 @@ const Dashboard = () => {
       color: "bg-gradient-to-tr from-[#1c6048] to-[#55b288]",
     },
   ];
+
+  if (loading || session.status === "loading") {
+    return (
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 md:ml-34 ml-2">
+        <Spinner className={"text-primary size-8"} />
+      </div>
+    );
+  }
 
   return (
     <div className="container">

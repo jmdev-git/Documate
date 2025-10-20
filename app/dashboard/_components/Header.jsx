@@ -1,13 +1,11 @@
 "use client";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import { Button } from "@/components/ui/base-button";
-import { Github, LogOut, Menu } from "lucide-react";
+import { Github, LogOut, Menu, Sparkle } from "lucide-react";
 import { signOut } from "next-auth/react";
-import { useTheme } from "next-themes";
 import React, { useEffect, useState } from "react";
 
 const Header = ({ setMobileOpen }) => {
-  const { theme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -22,31 +20,9 @@ const Header = ({ setMobileOpen }) => {
     >
       <div className="px-4 py-1.5 flex justify-between items-center">
         <div className="text-2xl font-bold text-primary dark:text-white tracking-tight flex items-center gap-1">
-          {theme === "dark" ? (
-            <div className="flex items-start gap-0.5">
-              <img
-                src="/DarkModeLogo.png"
-                className="md:h-9 md:w-8 w-7.5 h-9"
-                alt="Image Logo"
-              />
-              <div className="md:-space-y-2 -space-y-1.5 -mt-0.5 dark:text-white">
-                <h4 className="md:text-lg text-base">Documate</h4>
-                <p className="text-xs">by JMDev</p>
-              </div>
-            </div>
-          ) : (
-            <div className="flex items-start gap-0.5">
-              <img
-                src="/LightModeLogo.png"
-                className="md:h-9 md:w-8 w-7.5 h-9"
-                alt="Image Logo"
-              />
-              <div className="md:-space-y-2 -space-y-1.5 -mt-0.5 text-primary">
-                <h4 className="text-lg">Documate</h4>
-                <p className="text-xs">by JMDev</p>
-              </div>
-            </div>
-          )}
+          <h2 className="md:text-[1.6rem] text-2xl font-bold">
+            <span className="text-blue-600 font-black">Docu</span>mate
+          </h2>
         </div>
         <div className="flex items-center gap-1">
           <Button variant="ghost">

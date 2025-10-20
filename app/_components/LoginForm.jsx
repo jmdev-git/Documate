@@ -17,7 +17,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { BorderBeam } from "@/components/ui/border-beam";
-import { useTheme } from "next-themes";
 import { Magnetic } from "@/components/motion-primitives/magnetic";
 
 const LoginForm = () => {
@@ -26,7 +25,6 @@ const LoginForm = () => {
     password: "",
   });
   const router = useRouter();
-  const { theme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -103,31 +101,9 @@ const LoginForm = () => {
           <Card className="relative md:w-[480px] w-full overflow-hidden">
             <CardHeader>
               <CardTitle>
-                {theme === "dark" ? (
-                  <div className="flex items-start gap-0.5">
-                    <img
-                      src="/DarkModeLogo.png"
-                      className="md:h-9 md:w-8 w-8 h-10"
-                      alt="Image Logo"
-                    />
-                    <div className="md:-space-y-2 -space-y-1.5 md:-mt-0.5 dark:text-white">
-                      <h4 className="md:text-lg text-base">Documate</h4>
-                      <p className="text-xs">by JMDev</p>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex items-start gap-0.5">
-                    <img
-                      src="/LightModeLogo.png"
-                      className="md:h-9 md:w-8 w-8 h-10"
-                      alt="Image Logo"
-                    />
-                    <div className="md:-space-y-2 -space-y-1.5 md:-mt-0.5 text-primary">
-                      <h4 className="text-lg">Documate</h4>
-                      <p className="text-xs">by JMDev</p>
-                    </div>
-                  </div>
-                )}
+                <h2 className="md:text-[1.6rem] text-2xl font-bold">
+                  <span className="text-blue-600 font-black">Docu</span>mate
+                </h2>
               </CardTitle>
               <CardDescription>
                 Enter your credentials to access your account.
@@ -154,7 +130,10 @@ const LoginForm = () => {
             </CardContent>
             <CardFooter className="grid">
               <Magnetic>
-                <Button className={"cursor-pointer text-white w-full"} type="submit">
+                <Button
+                  className={"cursor-pointer text-white w-full"}
+                  type="submit"
+                >
                   Login
                 </Button>
               </Magnetic>

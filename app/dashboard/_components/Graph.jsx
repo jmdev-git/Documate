@@ -20,18 +20,20 @@ const Graph = ({ parameterMonth = [], historyMonth = [] }) => {
     setMounted(true);
   }, []);
 
-  const allMonths = [
+  const allPeriods = [
     ...new Set([
-      ...parameterMonth.map((d) => d.month),
-      ...historyMonth.map((d) => d.month),
+      ...parameterMonth.map((d) => `${d.month} ${d.year}`),
+      ...historyMonth.map((d) => `${d.month} ${d.year}`),
     ]),
   ];
 
-  const data = allMonths.map((month) => {
-    const parameter = parameterMonth.find((d) => d.month === month);
-    const history = historyMonth.find((d) => d.month === month);
+  const data = allPeriods.map((period) => {
+    const parameter = parameterMonth.find(
+      (d) => `${d.month} ${d.year}` === period
+    );
+    const history = historyMonth.find((d) => `${d.month} ${d.year}` === period);
     return {
-      month,
+      period, 
       createdCount: parameter?.count || 0,
       historyCount: history?.count || 0,
     };
@@ -50,7 +52,7 @@ const Graph = ({ parameterMonth = [], historyMonth = [] }) => {
             stroke={theme === "dark" ? "#545454" : "#dedede"}
           />
           <XAxis
-            dataKey="month"
+            dataKey="period"
             tick={{
               fontSize: 11,
               fill: theme === "dark" ? "#ffffff" : "#525252",

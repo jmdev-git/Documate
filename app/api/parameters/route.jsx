@@ -49,11 +49,14 @@ export async function GET(req) {
       { $match: { user_id: objectUserId } },
       {
         $group: {
-          _id: { $month: "$createdAt" },
+          _id: {
+            year: { $year: "$createdAt" },
+            month: { $month: "$createdAt" },
+          },
           count: { $sum: 1 },
         },
       },
-      { $sort: { _id: 1 } },
+      { $sort: { "_id.year": 1, "_id.month": 1 } },
     ]);
 
     const monthNames = [
@@ -72,7 +75,8 @@ export async function GET(req) {
     ];
 
     const formatted = monthlyData.map((item) => ({
-      month: monthNames[item._id - 1],
+      year: item._id.year,
+      month: monthNames[item._id.month - 1],
       count: item.count,
     }));
 
