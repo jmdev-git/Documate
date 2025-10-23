@@ -21,7 +21,7 @@ export default function DocumentWebViewer({ content }) {
 
   useEffect(() => {
     if (content) {
-      const timer = setTimeout(() => setIsReady(true), 500);
+      const timer = setTimeout(() => setIsReady(true), 1500);
       return () => clearTimeout(timer);
     }
   }, [content]);

@@ -21,43 +21,40 @@ export async function POST(req) {
     const requireReferences = citation_style && citation_style.trim() !== "";
     const isQAInput = /^\s*\d+\./m.test(userInput);
 
-    // --- NEW UNIFIED PROMPT GENERATION ---
-
-    const selectedTone = tone || "conversational, approachable, and direct";
-    const selectedStyle = writing_style || "clear and explanatory";
+    const selectedTone =
+      tone ||
+      "friendly, conversational, and approachable, like talking to a colleague or friend";
+    const selectedStyle =
+      writing_style ||
+      "natural, flowing sentences with varied structure, just like a human would speak";
     const selectedContentType = content_type || "answer";
 
     let referenceInstruction = "";
     if (requireReferences) {
       referenceInstruction = `
-    - If using external facts, include a brief in-text citation in **${citation_style}** style.
-    - Conclude with a "References" section with at least 3 supporting sources formatted in **${citation_style}**.`;
+      - If using external facts, drop a quick in-text citation in **${citation_style}** style.
+      - Wrap up with a "References" section listing at least 3 sources in **${citation_style}**.`;
     }
 
-    // This is the single, strict prompt template that overrides all long-form structure
     prompt = `
-        You are a human expert designed for extreme efficiency. Your goal is to provide a **single, highly concise, and direct ${selectedContentType}** based on the user's input.
+      You are a seasoned expert, giving **one short, snappy, human-like ${selectedContentType}**.  
 
-        **STRICT, OVERRIDING MANDATE:**
-        1.  **Be Short:** Minimize word count. Maximize information density.
-        2.  **Be Direct:** Answer the request immediately. **DO NOT** include any introductory sentences, titles, abstracts, introductions, conclusions, or summary paragraphs.
-        3.  **Be Human:** Write in a natural, **${selectedTone}** tone, using a **${selectedStyle}** style. Avoid robotic phrasing or unnecessary academic language.
+      **MANDATES (Human Style Overrides Everything):**  
+      1. **Keep it Short & Smooth:** Use contractions (it's, don't, you'll), natural flow, and varied sentences.  
+      2. **Be Direct:** Answer straight away—no intros, conclusions, or summaries.  
+      3. **Sound Human:** Write **${selectedTone}**, in **${selectedStyle}**. Use casual transitions like "So," "But," "Actually," "Well," where a real person would. Avoid stiff or robotic phrasing.
 
-        **User's Request:**
-        ${
-          isQAInput
-            ? `Answer these numbered questions with short, direct responses:`
-            : `The topic/question is:`
-        }
-        ${userInput}
+      **User Request:**  
+    ${
+      isQAInput
+        ? `Answer the numbered questions below in a simple Q&A format, restating the question in **bold** followed by a short answer:`
+        : `Topic/question:`
+    }
+    ${userInput}
 
-        ${
-          isQAInput
-            ? `If numbered questions are provided, answer them in a simple Q&A format, restating the question in **bold** followed immediately by the brief answer.`
-            : ""
-        }
-        ${referenceInstruction}
-            `;
+    ${isQAInput ? `Keep Q&A tight, friendly, and to the point.` : ""}
+    ${referenceInstruction}
+    `;
 
     const client = new OpenAI({ baseURL: endpoint, apiKey: token });
     const response = await client.chat.completions.create({
