@@ -12,7 +12,11 @@ import {
   Legend,
 } from "recharts";
 
-const Graph = ({ parameterMonth = [], historyMonth = [] }) => {
+const Graph = ({
+  parameterMonth = [],
+  historyMonth = [],
+  documentMonth = [],
+}) => {
   const { theme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -24,6 +28,7 @@ const Graph = ({ parameterMonth = [], historyMonth = [] }) => {
     ...new Set([
       ...parameterMonth.map((d) => `${d.month} ${d.year}`),
       ...historyMonth.map((d) => `${d.month} ${d.year}`),
+      ...documentMonth.map((d) => `${d.month} ${d.year}`),
     ]),
   ];
 
@@ -32,10 +37,14 @@ const Graph = ({ parameterMonth = [], historyMonth = [] }) => {
       (d) => `${d.month} ${d.year}` === period
     );
     const history = historyMonth.find((d) => `${d.month} ${d.year}` === period);
+    const document = documentMonth.find(
+      (d) => `${d.month} ${d.year}` === period
+    );
     return {
-      period, 
+      period,
       createdCount: parameter?.count || 0,
       historyCount: history?.count || 0,
+      documentCount: document?.count || 0,
     };
   });
 
@@ -86,6 +95,15 @@ const Graph = ({ parameterMonth = [], historyMonth = [] }) => {
             type="monotone"
             dataKey="historyCount"
             name="Prompt History"
+            stroke="#10B981"
+            strokeWidth={3}
+            dot={{ r: 5, strokeWidth: 2 }}
+            activeDot={{ r: 7 }}
+          />
+          <Line
+            type="monotone"
+            dataKey="documentCount"
+            name="Document Lists"
             stroke="#10B981"
             strokeWidth={3}
             dot={{ r: 5, strokeWidth: 2 }}

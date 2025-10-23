@@ -3,12 +3,17 @@ import { Spinner } from "@/components/ui/spinner";
 import { Editor } from "@tinymce/tinymce-react";
 import { marked } from "marked";
 import { useTheme } from "next-themes";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import htmlDocx from "html-docx-js/dist/html-docx";
+import { Button } from "@/components/ui/button";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 export default function DocumentWebViewer({ content }) {
   const [mounted, setMounted] = useState(false);
   const [isReady, setIsReady] = useState(false);
   const { theme } = useTheme();
+  const editorRef = useRef(null);
 
   useEffect(() => {
     setMounted(true);
@@ -16,7 +21,7 @@ export default function DocumentWebViewer({ content }) {
 
   useEffect(() => {
     if (content) {
-      const timer = setTimeout(() => setIsReady(true), 500); // wait for editor script
+      const timer = setTimeout(() => setIsReady(true), 500);
       return () => clearTimeout(timer);
     }
   }, [content]);
@@ -39,20 +44,16 @@ export default function DocumentWebViewer({ content }) {
     line-height: 1.6;
     color: #000;
   ">
-    <div style="
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      flex-wrap: wrap;
-      margin-bottom: 10px;
-    ">
-      <p style="margin: 4px 0; flex: 1; min-width: 180px;">
-        <strong>Name:</strong> ___________________________
-      </p>
-      <p style="margin: 4px 0; flex: 1; min-width: 150px; text-align: right;">
-        <strong>Date:</strong> ${formatted}
-      </p>
-    </div>
+    <table style="width: 100%; border: none; border-collapse: collapse; margin-bottom: 10px;">
+      <tr>
+        <td style="text-align: left; border: none; padding: 4px 0;">
+          <strong>Name:</strong> ___________________________
+        </td>
+        <td style="text-align: right; border: none; padding: 4px 0;">
+          <strong>Date:</strong> ${formatted}
+        </td>
+      </tr>
+    </table>
 
     <p style="margin: 6px 0;">
       <strong>Year & Program & Block:</strong> ___________________________
@@ -66,11 +67,56 @@ export default function DocumentWebViewer({ content }) {
       <strong>Assignment No.</strong> ___________________________
     </p>
 
-    <div style="margin-top: 10px;">
+    <div style="margin-top: 10px; padding-bottom: 3rem;">
       ${convertedMarkdown}
     </div>
   </div>
 `;
+
+  const handleExportDOCX = () => {
+    if (!editorRef.current) return alert("Editor not ready yet!");
+    const html = editorRef.current.getContent();
+    const converted = htmlDocx.asBlob(html);
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(converted);
+    link.download = "document.docx";
+    link.click();
+  };
+
+  const handleExportPDF = async () => {
+    const iframe = document.querySelector(".tox-edit-area iframe");
+    const element = iframe?.contentDocument?.body;
+    if (!element) return alert("Editor not ready!");
+
+    const canvas = await html2canvas(element, {
+      scale: 2,
+      useCORS: true,
+      logging: false,
+      backgroundColor: "#fff",
+    });
+
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jsPDF("p", "mm", "a4");
+    const pageWidth = 210;
+    const pageHeight = 297;
+
+    const imgWidth = pageWidth;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+    let position = 0;
+
+    pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft > 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    pdf.save("document.pdf");
+  };
 
   if (!isReady) {
     return (
@@ -83,10 +129,29 @@ export default function DocumentWebViewer({ content }) {
   if (!mounted) return null;
 
   return (
-    <div className="h-[calc(100vh-45px)]">
+    <div className="h-[calc(100vh-45px)] relative">
+      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-[50]">
+        <div className="md:hidden flex items-center gap-1.5">
+          <Button
+            size="sm"
+            className={"text-white cursor-pointer"}
+            onClick={handleExportDOCX}
+          >
+            Export to Docx
+          </Button>
+          <Button
+            size="sm"
+            className={"text-white cursor-pointer"}
+            onClick={handleExportPDF}
+          >
+            Export to PDF
+          </Button>
+        </div>
+      </div>
       <Editor
         key={theme}
         apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
+        onInit={(evt, editor) => (editorRef.current = editor)}
         init={{
           height: "100%",
           resize: false,

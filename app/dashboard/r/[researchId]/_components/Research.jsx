@@ -38,7 +38,7 @@ const Research = ({
           <div className="text-center">
             <SparklesText
               className={
-                "md:text-[2.7rem] text-4xl font-bold capitalize text-primary tracking-tighter"
+                "md:text-[2.7rem] text-4xl font-bold capitalize text-primary dark:text-white tracking-tighter"
               }
             >
               <TextAnimate animation="blurIn">

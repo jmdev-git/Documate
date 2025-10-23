@@ -12,6 +12,8 @@ const Dashboard = () => {
   const [parameterMonth, setParameterMonth] = useState([]);
   const [historyCount, setHistoryCount] = useState(0);
   const [historyMonth, setHistoryMonth] = useState([]);
+  const [documentCount, setDocumentCount] = useState(0);
+  const [documentMonth, setDocumentMonth] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -53,6 +55,26 @@ const Dashboard = () => {
       }
     };
 
+    const getDocumentCount = async () => {
+      try {
+        const res = await fetch(
+          `/api/document?userId=${session?.data?.user.id}`
+        );
+
+        const data = await res.json();
+
+        if (res.ok) {
+          setDocumentCount(data.count);
+          setDocumentMonth(data.formatted);
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getDocumentCount();
     getParameterCount();
     getPromptHistoryCount();
   }, [session]);
@@ -62,7 +84,7 @@ const Dashboard = () => {
       title: "Document Lists",
       description: "All uploaded study files",
       icon: <FileText size={40} className="text-white" />,
-      count: "Soon",
+      count: documentCount || 0,
       text: "View All Documents",
       delay: 0,
       color: "bg-gradient-to-tr from-[#3847bd] to-[#7797e3]",
@@ -129,8 +151,10 @@ const Dashboard = () => {
         ))}
       </div>
       <Graph
+        documentCount={documentCount}
         parameterCount={parameterCount}
         historyCount={historyCount}
+        documentMonth={documentMonth}
         parameterMonth={parameterMonth}
         historyMonth={historyMonth}
       />
